@@ -1,21 +1,29 @@
-// Función para escribir texto con efecto de máquina de escribir
-function escribirTexto(elemento, texto, velocidad) {
-    let index = 0;
-    function agregarLetra() {
-        if (index < texto.length) {
-            elemento.innerHTML += texto.charAt(index);
-            index++;
-            setTimeout(agregarLetra, velocidad);
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efecto de Escritura</title>
+    <style>
+        .efecto-escritura {
+            font-family: monospace;
+            font-size: 1.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid;
+            width: 100%;
+            animation: escribir 5s steps(50, end) forwards;
         }
-    }
-    agregarLetra();
-}
 
-// Cuando la página cargue, ejecuta el efecto en el elemento con id 'textoMaquina'
-document.addEventListener('DOMContentLoaded', function () {
-    const texto = "¡Bienvenido a este curso! \n\nEn los próximos meses, aprenderemos sobre tecnología y su impacto en nuestras vidas. Exploraremos programación, robótica, impresión 3D y más.";
-    const elemento = document.getElementById('textoMaquina');
-    if (elemento) {
-        escribirTexto(elemento, texto, 100);  // Velocidad de escritura: 100 ms
-    }
-});
+        @keyframes escribir {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="efecto-escritura">
+        ¡Bienvenido a este curso! En los próximos meses, aprenderemos sobre tecnología y su impacto en nuestras vidas. Exploraremos programación, robótica, impresión 3D y mucho más.
+    </div>
+</body>
+</html>
