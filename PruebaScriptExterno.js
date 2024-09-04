@@ -1,35 +1,72 @@
-const imagenReferenciaXXXXX = document.getElementById("imagenReferenciaXXXXX");
-const fraseXXXXX = "¡Bienvenido a este curso! \n\nEn los próximos meses descubriremos algunos secretos del fascinante mundo de la tecnología y cómo influye en nuestras vidas diarias. Exploraremos desde la programación y el diseño de algoritmos hasta la robótica, la impresión 3D y más. Estudiaremos diferentes herramientas, potenciaremos nuestra capacidad de pensar de forma estructurada y lógica, fomentando el pensamiento crítico y la resolución de problemas.\n\nPrepárate para los desafíos, la innovación y la posibilidad de crear soluciones que impacten en nuestro entorno. ¡El futuro está en tus manos!";
-
-function escribirXXXXX(frase, fraseElemento) {
-    let iXXXXX = 0;
-    fraseElemento.innerHTML = "";
-
-    function agregarCaracterXXXXX() {
-        if (iXXXXX < frase.length) {
-            fraseElemento.innerHTML += frase.charAt(iXXXXX);
-            iXXXXX++;
-            setTimeout(agregarCaracterXXXXX, 50);
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efecto de Escritura con Observador</title>
+    <style>
+        body {
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: flex-start;
         }
-    }
 
-    agregarCaracterXXXXX();
-}
-
-const opcionesObservadorXXXXX = {
-    rootMargin: "0px",
-    threshold: 0.5
-};
-
-const observerXXXXX = new IntersectionObserver(function(entries, observer) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            escribirXXXXX(fraseXXXXX, document.getElementById("fraseXXXXX"));
-            observerXXXXX.unobserve(imagenReferenciaXXXXX);
-        } else {
-            document.getElementById("fraseXXXXX").innerHTML = "";
+        img {
+            display: block;
+            margin-right: 20px;
+            border: none;
         }
-    });
-}, opcionesObservadorXXXXX);
 
-observerXXXXX.observe(imagenReferenciaXXXXX);
+        .texto-escritura {
+            font-family: monospace;
+            overflow: hidden;
+            white-space: pre-wrap;
+            border-right: 0px;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <img id="imagenReferenciaXXXXX" width="200px" src="https://aulavirtual35.educa.madrid.org/ies.emiliocastelar.madrid/draftfile.php/41971/user/draft/30461145/image.gif" role="presentation">
+    
+    <div id="fraseXXXXX" class="texto-escritura"></div>
+
+    <script>
+        const imagenReferenciaXXXXX = document.getElementById("imagenReferenciaXXXXX");
+        const fraseXXXXX = "¡Bienvenido a este curso! \n\nEn los próximos meses descubriremos algunos secretos del fascinante mundo de la tecnología y cómo influye en nuestras vidas diarias. Exploraremos desde la programación y el diseño de algoritmos hasta la robótica, la impresión 3D y más. Estudiaremos diferentes herramientas, potenciaremos nuestra capacidad de pensar de forma estructurada y lógica, fomentando el pensamiento crítico y la resolución de problemas.\n\nPrepárate para los desafíos, la innovación y la posibilidad de crear soluciones que impacten en nuestro entorno. ¡El futuro está en tus manos!";
+
+        function escribirXXXXX(frase, fraseElemento) {
+            let iXXXXX = 0;
+            fraseElemento.innerHTML = "";
+
+            function agregarCaracterXXXXX() {
+                if (iXXXXX < frase.length) {
+                    fraseElemento.innerHTML += frase.charAt(iXXXXX);
+                    iXXXXX++;
+                    setTimeout(agregarCaracterXXXXX, 50);
+                }
+            }
+
+            agregarCaracterXXXXX();
+        }
+
+        const opcionesObservadorXXXXX = {
+            rootMargin: "0px",
+            threshold: 0.5
+        };
+
+        const observerXXXXX = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    escribirXXXXX(fraseXXXXX, document.getElementById("fraseXXXXX"));
+                    observerXXXXX.unobserve(imagenReferenciaXXXXX); // Dejar de observar la imagen después de iniciar la escritura automática
+                } else {
+                    document.getElementById("fraseXXXXX").innerHTML = ""; // Borrar la frase si la imagen ya no es observada
+                }
+            });
+        }, opcionesObservadorXXXXX);
+
+        observerXXXXX.observe(imagenReferenciaXXXXX); // Observar la imagen de referencia
+    </script>
+</body>
+</html>
