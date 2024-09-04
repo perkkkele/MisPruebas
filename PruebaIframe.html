@@ -1,17 +1,53 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Efecto de Escritura</title>
-    <p>
-adfsfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf
-        }
-    </p>
-</head>
-<body>
-    <div class="efecto-escritura">
-        ¡Bienvenido a este curso! En los próximos meses, aprenderemos sobre tecnología y su impacto en nuestras vidas. Exploraremos programación, robótica, impresión 3D y mucho más.
-    </div>
-</body>
-</html>
+<table style="font-size: 0.9375rem;">
+    <thead>
+        <tr>
+            <th scope="col">
+                <img id="imagenReferenciaEXPRESIONYCOMUNICACIONDEIDEAS" src="https://aulavirtual35.educa.madrid.org/ies.emiliocastelar.madrid/draftfile.php/41971/user/draft/629377310/impresion3d.gif" alt="Imagen de referenciaEXPRESIONYCOMUNICACIONDEIDEAS" width="350" height="197" role="presentation" style="display: block; margin: 0; padding: 0; border: 0;">
+            </th>
+
+
+
+            <th scope="col" style="padding-left: 20px; text-align: justify; text-justify: inter-word; vertical-align: top;">
+                <div id="fraseEXPRESIONYCOMUNICACIONDEIDEAS" style="font-size: 0.9375rem; font-family: monospace; overflow: hidden; border-right: 0px; white-space: pre-wrap;"></div>
+                <script>
+                    const imagenReferenciaEXPRESIONYCOMUNICACIONDEIDEAS = document.getElementById("imagenReferenciaEXPRESIONYCOMUNICACIONDEIDEAS");
+                    const fraseEXPRESIONYCOMUNICACIONDEIDEAS = "La llegada de la impresión 3D al ámbito doméstico ha puesto la fabricación de piezas y utensilios de plástico y otros materiales al alcance de todas las personas, con un menor coste y una mayor versatilidad en el diseño al poder adaptarlo a nuestras propias necesidades.Los usos son tan variados que abarcan el ámbito educativo, las aplicaciones médicas(prótesis, órganos...), la ingeniería(fabricación de piezas complejas que antes solamente se podían producir en grandes cantidades), el calzado y la vestimenta personalizados, las réplicas en relieve para personas con minusvalía visual(maquetas de monumentos, planos, cuadros...), etc.";
+
+                    function escribirEXPRESIONYCOMUNICACIONDEIDEAS(frase, fraseElemento) {
+                        let iEXPRESIONYCOMUNICACIONDEIDEAS = 0;
+                        fraseElemento.innerHTML = "";
+
+                        function agregarCaracterEXPRESIONYCOMUNICACIONDEIDEAS() {
+                            if (iEXPRESIONYCOMUNICACIONDEIDEAS < frase.length) {
+                                fraseElemento.innerHTML += frase.charAt(iEXPRESIONYCOMUNICACIONDEIDEAS);
+                                iEXPRESIONYCOMUNICACIONDEIDEAS++;
+                                setTimeout(agregarCaracterEXPRESIONYCOMUNICACIONDEIDEAS, 50);
+                            }
+                        }
+
+                        agregarCaracterEXPRESIONYCOMUNICACIONDEIDEAS();
+                    }
+
+                    const opcionesObservadorEXPRESIONYCOMUNICACIONDEIDEAS = {
+                        rootMargin: "0px",
+                        threshold: 0.5
+                    };
+
+                    const observerEXPRESIONYCOMUNICACIONDEIDEAS = new IntersectionObserver(function(entries, observer) {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                escribirEXPRESIONYCOMUNICACIONDEIDEAS(fraseEXPRESIONYCOMUNICACIONDEIDEAS, document.getElementById("fraseEXPRESIONYCOMUNICACIONDEIDEAS"));
+                                observerEXPRESIONYCOMUNICACIONDEIDEAS.unobserve(imagenReferenciaEXPRESIONYCOMUNICACIONDEIDEAS); // Dejar de observar la imagen después de iniciar la escritura automática
+                            } else {
+                                document.getElementById("fraseEXPRESIONYCOMUNICACIONDEIDEAS").innerHTML = ""; // Borrar la frase si la imagen ya no es observada
+                            }
+                        });
+                    }, opcionesObservadorEXPRESIONYCOMUNICACIONDEIDEAS);
+
+                    observerEXPRESIONYCOMUNICACIONDEIDEAS.observe(imagenReferenciaEXPRESIONYCOMUNICACIONDEIDEAS); // Observar la imagen de referencia
+                </script>
+            </th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
