@@ -3,25 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de las 3 en raya</title>
+    <title>Juego de las 3 en raya con Cuestionario y Admin</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
         }
-        .game-container {
+        .container {
             text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
         }
         .board {
             display: grid;
             grid-template-columns: repeat(3, 100px);
             grid-gap: 5px;
-            margin-top: 20px;
+            margin: 20px auto;
         }
         .cell {
             width: 100px;
@@ -41,18 +45,51 @@
             margin-top: 20px;
             font-size: 1.2em;
         }
-        #reset {
+        button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 1em;
             cursor: pointer;
         }
+        #quizContainer, #adminPanel {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        #adminLogin {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+        #adminPanel {
+            display: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        #adminPanel input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Juego de las 3 en raya</h1>
-        <div class="board" id="board">
+    <div class="container">
+        <h1>Juego de las 3 en raya con Cuestionario</h1>
+        <div id="quizContainer">
+            <h2>Cuestionario</h2>
+            <div id="questions"></div>
+            <button id="submitQuiz">Enviar respuestas</button>
+        </div>
+        <div class="board" id="board" style="display: none;">
             <div class="cell" data-cell-index="0"></div>
             <div class="cell" data-cell-index="1"></div>
             <div class="cell" data-cell-index="2"></div>
@@ -64,27 +101,98 @@
             <div class="cell" data-cell-index="8"></div>
         </div>
         <div id="status"></div>
-        <button id="reset">Reiniciar juego</button>
+        <button id="reset" style="display: none;">Reiniciar juego</button>
     </div>
+    
+    <button id="adminLogin">Admin</button>
+    
+    <div id="adminPanel">
+        <h2>Panel de Administración</h2>
+        <div id="adminQuestions"></div>
+        <button id="saveQuestions">Guardar Cambios</button>
+        <button id="closeAdmin">Cerrar</button>
+    </div>
+
     <script>
         const statusDisplay = document.getElementById('status');
         const cells = document.querySelectorAll('.cell');
         const resetButton = document.getElementById('reset');
-
-        let gameActive = true;
+        const quizContainer = document.getElementById('quizContainer');
+        const submitQuizButton = document.getElementById('submitQuiz');
+        const board = document.getElementById('board');
+        const adminLoginButton = document.getElementById('adminLogin');
+        const adminPanel = document.getElementById('adminPanel');
+        const saveQuestionsButton = document.getElementById('saveQuestions');
+        const closeAdminButton = document.getElementById('closeAdmin');
+        
+        let gameActive = false;
         let currentPlayer = "X";
         let gameState = ["", "", "", "", "", "", "", "", ""];
 
         const winningConditions = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
         ];
+
+        let quizQuestions = [
+            {
+                question: "¿Cuál es la capital de Francia?",
+                options: ["Londres", "Berlín", "París"],
+                correctAnswer: 2
+            },
+            {
+                question: "¿Cuánto es 2 + 2?",
+                options: ["3", "4", "5"],
+                correctAnswer: 1
+            },
+            {
+                question: "¿Cuál es el planeta más grande del sistema solar?",
+                options: ["Marte", "Júpiter", "Saturno"],
+                correctAnswer: 1
+            }
+        ];
+
+        function renderQuiz() {
+            const questionsContainer = document.getElementById('questions');
+            questionsContainer.innerHTML = '';
+            quizQuestions.forEach((q, index) => {
+                const questionHtml = `
+                    <div class="question">
+                        <p>${index + 1}. ${q.question}</p>
+                        <div class="options">
+                            ${q.options.map((option, i) => `
+                                <label>
+                                    <input type="radio" name="q${index}" value="${i}">
+                                    ${option}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                questionsContainer.innerHTML += questionHtml;
+            });
+        }
+
+        function handleQuizSubmission() {
+            let allCorrect = true;
+            quizQuestions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (!selected || parseInt(selected.value) !== q.correctAnswer) {
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                quizContainer.style.display = 'none';
+                board.style.display = 'grid';
+                resetButton.style.display = 'inline-block';
+                gameActive = true;
+                statusDisplay.textContent = `Turno del jugador ${currentPlayer}`;
+            } else {
+                alert('Por favor, intenta de nuevo. Todas las respuestas deben ser correctas para jugar.');
+            }
+        }
 
         function handleCellClick(clickedCellEvent) {
             const clickedCell = clickedCellEvent.target;
@@ -135,17 +243,69 @@
         }
 
         function handleReset() {
-            gameActive = true;
+            gameActive = false;
             currentPlayer = "X";
             gameState = ["", "", "", "", "", "", "", "", ""];
-            statusDisplay.textContent = `Turno del jugador ${currentPlayer}`;
+            statusDisplay.textContent = 'Completa el cuestionario para jugar';
             cells.forEach(cell => cell.textContent = "");
+            board.style.display = 'none';
+            resetButton.style.display = 'none';
+            quizContainer.style.display = 'block';
+            renderQuiz();
+        }
+
+        function renderAdminPanel() {
+            const adminQuestionsContainer = document.getElementById('adminQuestions');
+            adminQuestionsContainer.innerHTML = '';
+            quizQuestions.forEach((q, index) => {
+                const questionHtml = `
+                    <div class="admin-question">
+                        <input type="text" id="adminQ${index}" value="${q.question}" placeholder="Pregunta">
+                        ${q.options.map((option, i) => `
+                            <input type="text" id="adminQ${index}O${i}" value="${option}" placeholder="Opción ${i + 1}">
+                        `).join('')}
+                        <select id="adminQ${index}Correct">
+                            ${q.options.map((_, i) => `
+                                <option value="${i}" ${i === q.correctAnswer ? 'selected' : ''}>Opción ${i + 1} correcta</option>
+                            `).join('')}
+                        </select>
+                    </div>
+                `;
+                adminQuestionsContainer.innerHTML += questionHtml;
+            });
+        }
+
+        function saveQuestions() {
+            quizQuestions = quizQuestions.map((_, index) => ({
+                question: document.getElementById(`adminQ${index}`).value,
+                options: [0, 1, 2].map(i => document.getElementById(`adminQ${index}O${i}`).value),
+                correctAnswer: parseInt(document.getElementById(`adminQ${index}Correct`).value)
+            }));
+            renderQuiz();
+            adminPanel.style.display = 'none';
+            alert('Cambios guardados con éxito');
+        }
+
+        function showAdminPanel() {
+            const password = prompt("Introduce la contraseña de administrador:");
+            if (password === "admin123") {  // Cambia esta contraseña por una más segura en un entorno real
+                adminPanel.style.display = 'block';
+                renderAdminPanel();
+            } else {
+                alert("Contraseña incorrecta");
+            }
         }
 
         cells.forEach(cell => cell.addEventListener('click', handleCellClick));
         resetButton.addEventListener('click', handleReset);
+        submitQuizButton.addEventListener('click', handleQuizSubmission);
+        adminLoginButton.addEventListener('click', showAdminPanel);
+        saveQuestionsButton.addEventListener('click', saveQuestions);
+        closeAdminButton.addEventListener('click', () => adminPanel.style.display = 'none');
 
-        statusDisplay.textContent = `Turno del jugador ${currentPlayer}`;
+        // Inicializar el juego
+        renderQuiz();
+        handleReset();
     </script>
 </body>
 </html>
