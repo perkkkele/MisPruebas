@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry Dash Simplificado</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #gameCanvas {
+            border: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const player = {
+            x: 50,
+            y: canvas.height - 50,
+            width: 40,
+            height: 40,
+            jumping: false,
+            jumpStrength: 15,
+            velocity: 0,
+            gravity: 0.8
+        };
+
+        const obstacles = [];
+        let score = 0;
+        let gameSpeed = 5;
+
+        function createObstacle() {
+            const height = Math.random() * (canvas.height / 2) + 20;
+            obstacles.push({
+                x: canvas.width,
+                y: canvas.height - height,
+                width: 40,
+                height: height
+            });
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = '#00f';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = '#f00';
+            obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
+        }
+
+        function updatePlayer() {
+            if (player.jumping) {
+                player.velocity += player.gravity;
+                player.y += player.velocity;
+
+                if (player.y > canvas.height - player.height) {
+                    player.y = canvas.height - player.height;
+                    player.jumping = false;
+                    player.velocity = 0;
+                }
+            }
+        }
+
+        function updateObstacles() {
+            obstacles.forEach(obstacle => {
+                obstacle.x -= gameSpeed;
+            });
+
+            if (obstacles.length > 0 && obstacles[0].x < -obstacles[0].width) {
+                obstacles.shift();
+                score++;
+                gameSpeed += 0.1;
+            }
+
+            if (Math.random() < 0.02) {
+                createObstacle();
+            }
+        }
+
+        function checkCollision() {
+            for (let obstacle of obstacles) {
+                if (
+                    player.x < obstacle.x + obstacle.width &&
+                    player.x + player.width > obstacle.x &&
+                    player.y < obstacle.y + obstacle.height &&
+                    player.y + player.height > obstacle.y
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function drawScore() {
+            ctx.fillStyle = '#000';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Puntuación: ${score}`, 10, 30);
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            updatePlayer();
+            updateObstacles();
+
+            drawPlayer();
+            drawObstacles();
+            drawScore();
+
+            if (checkCollision()) {
+                alert(`¡Juego terminado! Puntuación: ${score}`);
+                resetGame();
+                return;
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resetGame() {
+            player.y = canvas.height - player.height;
+            player.jumping = false;
+            player.velocity = 0;
+            obstacles.length = 0;
+            score = 0;
+            gameSpeed = 5;
+            gameLoop();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !player.jumping) {
+                player.jumping = true;
+                player.velocity = -player.jumpStrength;
+            }
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
