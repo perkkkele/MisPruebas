@@ -1,3 +1,4 @@
+# .github/workflows/deploy.yml
 name: CI/CD Deploy to GitHub Pages
 
 on:
@@ -6,9 +7,8 @@ on:
       - main
 
 permissions:
-  contents: read        # para checkout
-  pages: write          # para publicar en GitHub Pages
-  id-token: write       # si usas OIDC (opcional)
+  contents: read     # necesario para checkout
+  pages: write       # para publicar en GitHub Pages
 
 jobs:
   build-and-deploy:
@@ -24,7 +24,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        rrun: npm install
+        run: npm install
 
       - name: Build
         run: npm run build
