@@ -28,6 +28,7 @@ function App() {
   const [gameEnded, setGameEnded] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: string } | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [score, setScore] = useState<number | null>(null);
 
   useEffect(() => reset(), []);
 
@@ -44,6 +45,7 @@ function App() {
     setAttempts(MAX_ATTEMPTS);
     setGameEnded(false);
     setMessage(null);
+    setScore(null);
     const shuffled = shuffle(PHASES).map(text => ({ id: text, text, status: 'neutral' as const }));
     setPhases(shuffled);
   }
@@ -61,9 +63,10 @@ function App() {
     const newPhases = [...phases];
     const [moved] = newPhases.splice(fromIdx, 1);
     newPhases.splice(toIdx, 0, moved);
-    setPhases(newPhases.map(p => ({ ...p, status: 'neutral' })));
+    setPhases(newPhases.map(p => ({ ...p, status: 'neutral' })));  
     setDraggedId(null);
     setMessage(null);
+    setScore(null);
   }
 
   function handleDragOver(e: DragEvent) {
@@ -73,22 +76,28 @@ function App() {
   function check() {
     if (gameEnded || attempts <= 0) return;
     let allCorrect = true;
+    let correctCount = 0;
     const updated = phases.map((p, i) => {
-      if (p.text === CORRECT_ORDER[i]) return { ...p, status: 'correct' as const };
+      if (p.text === CORRECT_ORDER[i]) {
+        correctCount++;
+        return { ...p, status: 'correct' as const };
+      }
       allCorrect = false;
       return { ...p, status: 'incorrect' as const };
     });
     setPhases(updated);
     setAttempts(a => a - 1);
+    setScore(correctCount);
+    const percent = Math.round((correctCount / CORRECT_ORDER.length) * 100);
 
     if (allCorrect) {
-      setMessage({ text: '¡Felicidades! Has ordenado correctamente todas las fases.', type: 'success' });
+      setMessage({ text: `¡Felicidades! Has ordenado correctamente todas las fases. Calificación: ${percent}% (${correctCount}/${CORRECT_ORDER.length})`, type: 'success' });
       setGameEnded(true);
     } else if (attempts - 1 <= 0) {
-      setMessage({ text: 'Has agotado tus intentos. Se revela el orden correcto.', type: 'error' });
+      setMessage({ text: `Has agotado tus intentos. Calificación final: ${percent}% (${correctCount}/${CORRECT_ORDER.length}). Se revela el orden correcto.`, type: 'error' });
       reveal();
     } else {
-      setMessage({ text: `Incorrecto. Te quedan ${attempts - 1} intento(s).`, type: 'info' });
+      setMessage({ text: `Incorrecto. Tu calificación: ${percent}% (${correctCount}/${CORRECT_ORDER.length}). Te quedan ${attempts - 1} intento(s).`, type: 'info' });
     }
   }
 
