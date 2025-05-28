@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordenar Fases del Proyecto</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Ordena correctamente las distintas fases del método de proyectos.</h1>
+        
+        <div class="exercise-area">
+            <ul id="phases-list" class="phases-list" aria-labelledby="instruction">
+                <!-- Phases will be dynamically inserted here -->
+            </ul>
+        </div>
+        
+        <div id="feedback-message" class="feedback-message" aria-live="polite"></div>
+
+        <div class="controls">
+            <button id="check-button" class="button primary-button">Corregir</button>
+            <button id="reset-button" class="button secondary-button">Reiniciar ejercicio</button>
+            <div class="attempts-info">
+                Quedan <span id="attempts-count" class="attempts-count-bubble">3</span> intentos
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="index.tsx"></script>
+</body>
+</html>
